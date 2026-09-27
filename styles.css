@@ -1235,7 +1235,16 @@ body {
   display: none !important;
 }
 
-/* Responsive */
+/* ==========================================================================
+   MOBILE SUBCATEGORY BAR (CHIPS)
+   ========================================================================== */
+.mobile-category-wrap {
+  display: none;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN & MOBILE OPTIMIZATIONS
+   ========================================================================== */
 @media (max-width: 1024px) {
   .forti-workspace {
     grid-template-columns: 1fr;
@@ -1243,21 +1252,331 @@ body {
   .forti-sidebar {
     display: none;
   }
+  .mobile-category-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--forti-dark-top);
+    border-bottom: 1px solid var(--forti-border);
+    padding: 0.45rem 1rem;
+    overflow: hidden;
+  }
+  .mobile-category-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--forti-red);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .mobile-category-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .mobile-category-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .mobile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background-color: #162030;
+    border: 1px solid var(--forti-border);
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    touch-action: manipulation;
+  }
+  .mobile-chip:hover {
+    color: #ffffff;
+    border-color: var(--text-dim);
+  }
+  .mobile-chip.active {
+    background-color: var(--forti-red);
+    color: #ffffff;
+    border-color: var(--forti-red);
+    box-shadow: 0 0 8px var(--forti-red-glow);
+  }
+  .mobile-chip .chip-count {
+    font-size: 0.6rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 0.05rem 0.35rem;
+    border-radius: 9999px;
+  }
+}
+
+/* SMARTPHONE & TABLET PORTRAIT (<= 768px) */
+@media (max-width: 768px) {
+  /* Prevent iOS Safari auto-zoom on input focus */
+  input[type="text"], input[type="search"] {
+    font-size: 16px !important;
+  }
+
+  /* Two-row responsive header */
+  .forti-header {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+  }
+  .header-left {
+    order: 1;
+    gap: 0.35rem;
+  }
+  .fortinet-brand-svg {
+    width: 105px;
+    height: 22px;
+  }
+  .vdom-pill-wrap .vdom-badge {
+    display: none;
+  }
+  .device-name-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .header-right {
+    order: 2;
+    gap: 0.35rem;
+  }
+  .sys-badge-group, .user-profile-badge {
+    display: none;
+  }
+  .forti-cli-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.72rem;
+  }
+  .header-center {
+    order: 3;
+    width: 100%;
+    margin-top: 0.15rem;
+  }
+  .forti-search {
+    width: 100%;
+    max-width: 100%;
+    height: 34px;
+  }
+
+  /* Master Section Tabs */
+  .forti-master-tabs {
+    padding: 0 0.4rem;
+    gap: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .section-tab {
+    padding: 0.55rem 0.65rem;
+    font-size: 0.76rem;
+    gap: 0.35rem;
+  }
+  .section-tab .tab-icon {
+    font-size: 0.88rem;
+  }
+  .section-tab .tab-count {
+    font-size: 0.58rem;
+    padding: 0.08rem 0.32rem;
+  }
+
+  /* Quick Parameter Bar */
+  .forti-quick-bar {
+    padding: 0.45rem 0.75rem;
+  }
+  .quick-bar-main {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+  }
   .quick-inputs-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
     width: 100%;
   }
   .quick-field {
-    flex: 1 1 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+  }
+  .quick-field label {
+    font-size: 0.62rem;
   }
   .quick-input-wrap {
     width: 100%;
+    height: 32px;
   }
   .quick-input-wrap input {
     width: 100%;
   }
   .quick-actions-group {
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .btn-adv-toggle, .btn-subtle {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    touch-action: manipulation;
+  }
+  .adv-grid {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+  .adv-grid .quick-input-wrap {
+    height: 32px;
+  }
+
+  /* Main Workbench Content */
+  .forti-content {
+    padding: 0.65rem 0.5rem;
+  }
+  .content-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    padding-bottom: 0.5rem;
+  }
+  .results-stats {
+    font-size: 0.72rem;
+  }
+  .forti-btn-primary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.4rem 0.7rem;
+    touch-action: manipulation;
+  }
+
+  /* Cards */
+  .cmd-card-header {
+    padding: 0.65rem 0.75rem 0.5rem 0.75rem;
+  }
+  .cmd-meta {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .category-tag, .fw-badge, .template-badge {
+    font-size: 0.58rem;
+    padding: 0.1rem 0.35rem;
+  }
+  .cmd-title {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+  .cmd-body {
+    padding: 0 0.75rem 0.75rem 0.75rem;
+    gap: 0.55rem;
+  }
+  .scenario-box {
+    font-size: 0.73rem;
+    padding: 0.45rem 0.6rem;
+  }
+  .terminal-header {
+    padding: 0.35rem 0.55rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .terminal-left-info {
+    font-size: 0.68rem;
+  }
+  .terminal-actions {
+    width: 100%;
+    display: flex;
     justify-content: flex-end;
+    gap: 0.35rem;
+  }
+  .terminal-btn {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.68rem;
+    touch-action: manipulation;
+  }
+  .terminal-code {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    -webkit-overflow-scrolling: touch;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .output-tip {
+    font-size: 0.7rem;
+    padding: 0.45rem 0.6rem;
+  }
+
+  /* Web CLI Drawer on Mobile */
+  .cli-drawer {
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 75vh;
+    border-radius: 14px 14px 0 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.75);
+  }
+  .cli-drawer-body {
+    height: calc(75vh - 44px);
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0.75rem));
+  }
+  .cli-input-line input {
+    font-size: 16px !important;
+  }
+
+  /* Reference Tables in Section 5 */
+  .forti-decoder-box {
+    margin-top: 1rem;
+    padding: 0.65rem 0.5rem;
+  }
+  .decoder-header h2 {
+    font-size: 0.92rem;
+  }
+  .decoder-header p {
+    font-size: 0.72rem;
+  }
+  .decoder-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .forti-table {
+    font-size: 0.72rem;
+    min-width: 540px;
+  }
+  .forti-table th, .forti-table td {
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+/* SMALL SMARTPHONES (<= 480px, e.g. iPhone Mini / SE) */
+@media (max-width: 480px) {
+  .section-tab {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.72rem;
+  }
+  .section-tab .tab-title {
+    font-size: 0.72rem;
+  }
+  .quick-inputs-group {
+    grid-template-columns: 1fr;
+  }
+  .terminal-btn {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.65rem;
   }
 }
 

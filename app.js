@@ -2656,55 +2656,76 @@ function renderSidebar() {
     headingEl.textContent = sectionConfig.title;
   }
 
-  const navEl = document.getElementById("category-nav");
-  if (!navEl) return;
-
   const sectionCmds = COMMANDS.filter(cmd => getCommandSection(cmd) === currentSection);
 
-  navEl.innerHTML = sectionConfig.categories.map(cat => {
-    let count = 0;
-    if (cat.id === "all") {
-      count = sectionCmds.length;
-    } else if (cat.id === "workflow-route") {
-      count = sectionCmds.filter(c => c.id === "workflow-route-creation").length;
-    } else if (cat.id === "workflow-vlan") {
-      count = sectionCmds.filter(c => c.id === "workflow-vlan-creation").length;
-    } else if (cat.id === "workflow-ipsec") {
-      count = sectionCmds.filter(c => c.id === "workflow-ipsec-creation").length;
-    } else if (cat.id === "reference-decoder") {
-      count = "Ref";
-    } else {
-      count = sectionCmds.filter(c => c.category === cat.id).length;
-    }
+  function getCategoryCount(cat) {
+    if (cat.id === "all") return sectionCmds.length;
+    if (cat.id === "workflow-route") return sectionCmds.filter(c => c.id === "workflow-route-creation").length;
+    if (cat.id === "workflow-vlan") return sectionCmds.filter(c => c.id === "workflow-vlan-creation").length;
+    if (cat.id === "workflow-ipsec") return sectionCmds.filter(c => c.id === "workflow-ipsec-creation").length;
+    if (cat.id === "reference-decoder") return "Ref";
+    return sectionCmds.filter(c => c.category === cat.id).length;
+  }
 
-    const isActive = (cat.id === currentCategory) ? "active" : "";
+  // 1. Render Desktop Sidebar
+  const navEl = document.getElementById("category-nav");
+  if (navEl) {
+    navEl.innerHTML = sectionConfig.categories.map(cat => {
+      const count = getCategoryCount(cat);
+      const isActive = (cat.id === currentCategory) ? "active" : "";
 
-    return `
-      <button class="nav-item ${isActive}" data-category="${cat.id}">
-        <span class="nav-icon">${cat.icon}</span>
-        <span class="nav-text">${escapeHtml(cat.label)}</span>
-        <span class="nav-count">${count}</span>
-      </button>
-    `;
-  }).join("");
+      return `
+        <button class="nav-item ${isActive}" data-category="${cat.id}">
+          <span class="nav-icon">${cat.icon}</span>
+          <span class="nav-text">${escapeHtml(cat.label)}</span>
+          <span class="nav-count">${count}</span>
+        </button>
+      `;
+    }).join("");
 
-  navEl.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-      const cat = item.getAttribute("data-category");
-      if (cat === "reference-decoder") {
-        const decBox = document.getElementById("log-decoder");
-        if (decBox) {
-          decBox.style.display = "block";
-          decBox.scrollIntoView({ behavior: "smooth" });
-        }
-        return;
-      }
-      navEl.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-      item.classList.add("active");
-      currentCategory = cat;
-      renderCards();
+    navEl.querySelectorAll(".nav-item").forEach(item => {
+      item.addEventListener("click", () => {
+        handleCategorySelect(item.getAttribute("data-category"));
+      });
     });
-  });
+  }
+
+  // 2. Render Mobile Subcategory Chips Bar
+  const mobileNavEl = document.getElementById("mobile-category-bar");
+  if (mobileNavEl) {
+    mobileNavEl.innerHTML = sectionConfig.categories.map(cat => {
+      const count = getCategoryCount(cat);
+      const isActive = (cat.id === currentCategory) ? "active" : "";
+
+      return `
+        <button class="mobile-chip ${isActive}" data-category="${cat.id}">
+          <span class="chip-icon">${cat.icon}</span>
+          <span class="chip-label">${escapeHtml(cat.label)}</span>
+          <span class="chip-count">${count}</span>
+        </button>
+      `;
+    }).join("");
+
+    mobileNavEl.querySelectorAll(".mobile-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        handleCategorySelect(chip.getAttribute("data-category"));
+      });
+    });
+  }
+}
+
+function handleCategorySelect(cat) {
+  if (cat === "reference-decoder") {
+    const decBox = document.getElementById("log-decoder");
+    if (decBox) {
+      decBox.style.display = "block";
+      decBox.scrollIntoView({ behavior: "smooth" });
+    }
+    return;
+  }
+  currentCategory = cat;
+  renderSidebar();
+  renderCards();
 }
 
 // Render cards

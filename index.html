@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#121824">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fortinet FortiGate® - CLI Diagnostics & Troubleshooting Portal</title>
   <meta name="description" content="Fortinet FortiGate Web CLI & Troubleshooting Operations Portal. 100% database-free, live parameter injection, 1-click copy, and authentic FortiOS interface.">
   <link rel="stylesheet" href="styles.css">
@@ -223,6 +226,14 @@
         </div>
       </div>
     </section>
+
+    <!-- MOBILE HORIZONTAL SUBCATEGORY BAR (Visible only on mobile/tablet screens) -->
+    <div class="mobile-category-wrap">
+      <div class="mobile-category-label">Subcategory:</div>
+      <nav class="mobile-category-bar" id="mobile-category-bar" aria-label="Mobile Subcategory Filters">
+        <!-- Rendered dynamically by app.js based on currentSection -->
+      </nav>
+    </div>
 
     <!-- MAIN WORKSPACE: DYNAMIC SIDEBAR + CARDS -->
     <div class="forti-workspace">
