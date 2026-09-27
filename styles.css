@@ -290,52 +290,191 @@ body {
 }
 
 /* ==========================================================================
-   2. LIVE OFFICE PARAMETER INJECTOR (TOP BAR)
+   2. MASTER SECTION TABS (5 PRIMARY ARCHITECTURAL SECTIONS)
    ========================================================================== */
-.forti-param-injector {
-  background: linear-gradient(180deg, #151e2c 0%, #111824 100%);
-  border-bottom: 1px solid var(--forti-border);
-  padding: 0.75rem 1.25rem 0.85rem 1.25rem;
+.forti-master-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--forti-dark-top);
+  border-bottom: 2px solid var(--forti-border);
+  padding: 0 1.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.injector-header {
+.forti-master-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.section-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.section-tab:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.section-tab.active {
+  color: #ffffff;
+  border-bottom-color: var(--forti-red);
+  background-color: rgba(238, 49, 36, 0.06);
+}
+
+.section-tab .tab-icon {
+  font-size: 1rem;
+}
+
+.section-tab .tab-title {
+  letter-spacing: 0.01em;
+}
+
+.section-tab .tab-count {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.12rem 0.45rem;
+  border-radius: 9999px;
+  background-color: #1e293b;
+  color: var(--text-dim);
+  transition: all 0.2s ease;
+}
+
+.section-tab.active .tab-count {
+  background-color: var(--forti-red);
+  color: #ffffff;
+  box-shadow: 0 0 8px var(--forti-red-glow);
+}
+
+/* ==========================================================================
+   3. SLIM QUICK VARIABLE BAR (4 CORE PARAMS + COLLAPSIBLE DRAWER)
+   ========================================================================== */
+.forti-quick-bar {
+  background: linear-gradient(180deg, #141c2a 0%, #101622 100%);
+  border-bottom: 1px solid var(--forti-border);
+  padding: 0.55rem 1.25rem;
+}
+
+.quick-bar-main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.6rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.injector-title {
+.quick-inputs-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.825rem;
-  color: var(--text-main);
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.live-pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--forti-red);
-  box-shadow: 0 0 8px var(--forti-red);
-  animation: pulse-red 2s infinite ease-in-out;
+.quick-field {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-@keyframes pulse-red {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.9); }
-}
-
-.injector-subtitle {
-  font-size: 0.75rem;
+.quick-field label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
-.injector-actions {
+.quick-input-wrap {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  background-color: #080d14;
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: all 0.15s ease;
+  height: 28px;
+}
+
+.quick-input-wrap:focus-within {
+  border-color: var(--forti-red);
+  box-shadow: 0 0 0 2px var(--forti-red-glow);
+}
+
+.quick-prefix {
+  background-color: #172130;
+  color: var(--forti-red);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0 0.45rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--forti-border);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.quick-input-wrap input {
+  width: 120px;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 0.45rem;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  height: 100%;
+}
+
+.quick-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-adv-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #1a2433;
+  border: 1px solid var(--forti-border);
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-adv-toggle:hover {
+  background-color: #243247;
+  color: #ffffff;
+  border-color: var(--text-dim);
+}
+
+.btn-adv-toggle.active {
+  background-color: #2b3952;
+  color: #38bdf8;
+  border-color: #38bdf8;
 }
 
 .btn-subtle {
@@ -344,9 +483,10 @@ body {
   color: var(--text-muted);
   font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.25rem 0.55rem;
+  padding: 0.3rem 0.6rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  transition: all 0.15s;
 }
 
 .btn-subtle:hover {
@@ -366,121 +506,81 @@ body {
   border-radius: 9999px;
 }
 
-.injector-grid {
+/* Collapsible Advanced Variables Drawer */
+.advanced-vars-drawer {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--forti-border);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.advanced-vars-drawer.hidden {
+  display: none;
+}
+
+.adv-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.5rem;
 }
 
-.injector-field {
-  display: flex;
+.adv-grid .quick-field {
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.2rem;
 }
 
-.injector-field label {
-  font-size: 0.66rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--text-muted);
-}
-
-.injector-input-wrap {
-  display: flex;
-  align-items: center;
-  background-color: #0b0f17;
-  border: 1px solid var(--forti-border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  transition: all 0.15s ease;
-}
-
-.injector-input-wrap:focus-within {
-  border-color: var(--forti-red);
-  box-shadow: 0 0 0 2px var(--forti-red-glow);
-}
-
-.field-prefix {
-  background-color: #172130;
-  color: var(--forti-red);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 0.35rem 0.45rem;
-  border-right: 1px solid var(--forti-border);
-  text-transform: uppercase;
-  user-select: none;
-}
-
-.injector-input-wrap input {
+.adv-grid .quick-input-wrap {
   width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 0.3rem 0.45rem;
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
 }
 
-/* ==========================================================================
-   3. DIAGNOSTIC SCENARIOS (INCIDENT WIZARD)
-   ========================================================================== */
-.forti-wizard-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.65rem 1.25rem;
-  background-color: var(--forti-dark-top);
+.adv-grid .quick-input-wrap input {
+  width: 100%;
+}
+
+/* Sidebar Section Header */
+.sidebar-header-wrap {
+  padding: 0.25rem 0.5rem 0.5rem 0.5rem;
   border-bottom: 1px solid var(--forti-border);
-  overflow-x: auto;
-  white-space: nowrap;
 }
 
-.wizard-label {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.72rem;
+.sidebar-section-eyebrow {
+  display: block;
+  font-size: 0.6rem;
   font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  flex-shrink: 0;
+  color: var(--forti-red);
 }
 
-.wizard-pills {
-  display: flex;
+.sidebar-section-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  margin-top: 0.15rem;
+}
+
+/* FortiOS Version Compatibility Badge */
+.fw-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-}
-
-.pill-btn {
-  background-color: #1a2433;
-  border: 1px solid var(--forti-border);
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.3rem 0.7rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.pill-btn:hover {
-  background-color: #243247;
-  color: #ffffff;
-  border-color: var(--forti-border-light);
-}
-
-.pill-btn.active {
-  background-color: var(--forti-red);
-  color: #ffffff;
-  border-color: var(--forti-red);
+  background-color: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
   font-weight: 700;
-  box-shadow: 0 0 10px var(--forti-red-glow);
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.02em;
+}
+
+.os-val {
+  color: #22d3ee !important;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
 }
 
 /* ==========================================================================
@@ -1142,6 +1242,22 @@ body {
   }
   .forti-sidebar {
     display: none;
+  }
+  .quick-inputs-group {
+    width: 100%;
+  }
+  .quick-field {
+    flex: 1 1 140px;
+  }
+  .quick-input-wrap {
+    width: 100%;
+  }
+  .quick-input-wrap input {
+    width: 100%;
+  }
+  .quick-actions-group {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 

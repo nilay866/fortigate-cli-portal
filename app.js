@@ -271,8 +271,8 @@ config firewall policy
     set action accept                           # [KEEP]: Allow traffic
     set schedule "always"                       # [KEEP]: 24/7 schedule
     set service "ALL"                           # [KEEP]: VIP handles port translation; 'ALL' or custom service
-    set utm-status enable                       # [KEEP]: Enable IPS/Antivirus scanning
-    set ips-sensor "default"                    # [OPTIONAL]: Protect server from exploits
+    # Note: On FortiOS 7.2/7.4/7.6, applying ips-sensor or av-profile automatically activates UTM inspection:
+    set ips-sensor "default"                    # [OPTIONAL]: Protect server from exploits (FortiOS 7.2/7.4/7.6)
     set nat disable                             # [CRITICAL]: MUST BE 'disable'! VIP handles DNAT automatically
     set logtraffic all                          # [KEEP]: Log all inbound hits
   next
@@ -1703,7 +1703,7 @@ end
     set action accept
     set schedule "always"
     set service "HTTP" "HTTPS" "DNS"
-    set utm-status enable
+    # Note: FortiOS 7.2 / 7.4 / 7.6 activates UTM automatically when profiles are applied:
     set ssl-ssh-profile "certificate-inspection"
     set av-profile "default"
     set webfilter-profile "default"
@@ -1936,7 +1936,7 @@ config firewall policy
     set action accept
     set schedule "always"
     set service "SVC_Custom_{{port}}"
-    set utm-status enable
+    # Note: FortiOS 7.2 / 7.4 / 7.6 activates UTM automatically via ips-sensor:
     set ips-sensor "default"
     set nat disable                    # MUST be disable for VIP!
     set logtraffic all
@@ -2366,9 +2366,126 @@ const defaultVars = {
 };
 
 let currentVars = { ...defaultVars };
+let currentSection = "policy";
 let currentCategory = "all";
-let currentPreset = "all";
 let searchQuery = "";
+
+// 5 Master Sections Configuration
+const SECTIONS = {
+  policy: {
+    id: "policy",
+    title: "Policies & Objects",
+    icon: "📜",
+    summary: "Firewall rules, address objects, groups, VIP port forwards, and CLI policy ordering",
+    categories: [
+      { id: "all", label: "All Policies & Objects", icon: "📁" },
+      { id: "workflow", label: "Step-by-Step Policy Builder", icon: "📋" },
+      { id: "policy-templates", label: "Firewall Policy Templates", icon: "📜" },
+      { id: "object-templates", label: "Addresses, Groups & FQDNs", icon: "📦" },
+      { id: "vip-templates", label: "VIP & Port Forwarding", icon: "🔀" },
+      { id: "cli-ops", label: "CLI Policy Reorder & Hit Counters", icon: "⌨️" }
+    ]
+  },
+  sdwan: {
+    id: "sdwan",
+    title: "SD-WAN & Routing",
+    icon: "🌐",
+    summary: "SD-WAN zones, member interfaces, SLA health-checks, steering rules, PBR & static routes",
+    categories: [
+      { id: "all", label: "All SD-WAN & Routing", icon: "📁" },
+      { id: "sdwan", label: "SD-WAN Zones & SLA Steering", icon: "🌐" },
+      { id: "pbr", label: "Policy-Based Routing (PBR)", icon: "🧭" },
+      { id: "route-templates", label: "Static Routes (sdwan-zone) & BGP", icon: "🛣️" },
+      { id: "routing", label: "Routing Table & FIB Verification", icon: "🧭" },
+      { id: "workflow-route", label: "Static Route Step-by-Step", icon: "📋" }
+    ]
+  },
+  interfaces: {
+    id: "interfaces",
+    title: "Interfaces & Migration",
+    icon: "🔌",
+    summary: "Physical ports, 802.1Q VLAN subinterfaces, 802.3ad LACP trunks & zero-loss reference migration",
+    categories: [
+      { id: "all", label: "All Interfaces & Migration", icon: "📁" },
+      { id: "interfaces", label: "Physical, VLAN & LACP Trunks", icon: "🔌" },
+      { id: "migration", label: "Zero-Loss Reference Migration", icon: "🔄" },
+      { id: "network", label: "ARP, MAC Table & Port Diag", icon: "🔍" },
+      { id: "workflow-vlan", label: "VLAN & DHCP Step-by-Step", icon: "📋" }
+    ]
+  },
+  vpn: {
+    id: "vpn",
+    title: "VPNs (IPsec & SSL)",
+    icon: "🔐",
+    summary: "Route-based IKEv2 site-to-site IPsec tunnels, dial-up VPNs & SSL-VPN portals",
+    categories: [
+      { id: "all", label: "All VPN Configurations", icon: "📁" },
+      { id: "ipsec", label: "Route-Based IPsec (IKEv2)", icon: "🔐" },
+      { id: "sslvpn", label: "SSL-VPN Portals & Tunnels", icon: "👥" },
+      { id: "workflow-ipsec", label: "IPsec Step-by-Step Builder", icon: "📋" }
+    ]
+  },
+  troubleshoot: {
+    id: "troubleshoot",
+    title: "Troubleshooting & Diagnostics",
+    icon: "🚨",
+    summary: "Debug flow, Wireshark-level packet sniffers, session clearing, crash logs, error resolver & parse shield",
+    categories: [
+      { id: "all", label: "All Diagnostics", icon: "📁" },
+      { id: "flow", label: "Debug Flow (Packet Tracer)", icon: "🔬" },
+      { id: "sniffer", label: "Packet Sniffer (Raw Frames)", icon: "📡" },
+      { id: "session", label: "Session Table & Clear Stuck", icon: "📑" },
+      { id: "error-logs", label: "Error Log Resolver (Smoking Gun)", icon: "🚨" },
+      { id: "syntax-shield", label: "Syntax Shield (Parse Errors)", icon: "🛡️" },
+      { id: "system", label: "High CPU, Conserve Mode & Crashes", icon: "🔥" },
+      { id: "ping", label: "Ping & Traceroute Options", icon: "📍" },
+      { id: "ha", label: "HA Cluster & Sync Verification", icon: "👥" },
+      { id: "backup", label: "Backup & Revision Management", icon: "💾" },
+      { id: "reference-decoder", label: "📋 Reference Log & Syntax Tables", icon: "📖" }
+    ]
+  }
+};
+
+const CATEGORY_TO_SECTION = {
+  "workflow": "policy",
+  "policy-templates": "policy",
+  "object-templates": "policy",
+  "vip-templates": "policy",
+  "cli-ops": "policy",
+
+  "sdwan": "sdwan",
+  "pbr": "sdwan",
+  "route-templates": "sdwan",
+  "routing": "sdwan",
+
+  "interfaces": "interfaces",
+  "migration": "interfaces",
+  "network": "interfaces",
+
+  "ipsec": "vpn",
+  "sslvpn": "vpn",
+
+  "flow": "troubleshoot",
+  "sniffer": "troubleshoot",
+  "session": "troubleshoot",
+  "ping": "troubleshoot",
+  "system": "troubleshoot",
+  "ha": "troubleshoot",
+  "backup": "troubleshoot",
+  "error-logs": "troubleshoot",
+  "syntax-shield": "troubleshoot"
+};
+
+const COMMAND_SECTION_OVERRIDES = {
+  "workflow-route-creation": "sdwan",
+  "workflow-vlan-creation": "interfaces",
+  "workflow-ipsec-creation": "vpn"
+};
+
+function getCommandSection(cmd) {
+  if (COMMAND_SECTION_OVERRIDES[cmd.id]) return COMMAND_SECTION_OVERRIDES[cmd.id];
+  return CATEGORY_TO_SECTION[cmd.category] || "troubleshoot";
+}
 
 // Load from LocalStorage
 function loadStoredVars() {
@@ -2377,6 +2494,10 @@ function loadStoredVars() {
     if (saved) {
       const parsed = JSON.parse(saved);
       currentVars = { ...defaultVars, ...parsed };
+    }
+    const savedSection = localStorage.getItem("fgt_portal_section");
+    if (savedSection && SECTIONS[savedSection]) {
+      currentSection = savedSection;
     }
   } catch (e) {
     console.error("Local storage load failed", e);
@@ -2479,8 +2600,26 @@ function escapeHtml(str) {
 // Filter commands
 function getFilteredCommands() {
   return COMMANDS.filter(cmd => {
-    if (currentCategory !== "all" && cmd.category !== currentCategory) return false;
-    if (currentPreset !== "all" && !cmd.presets.includes(currentPreset)) return false;
+    const cmdSection = getCommandSection(cmd);
+
+    // If searching globally, allow cross-section matches
+    if (!searchQuery) {
+      if (cmdSection !== currentSection) return false;
+    }
+
+    if (currentCategory !== "all") {
+      if (currentCategory === "workflow-route") {
+        if (cmd.id !== "workflow-route-creation") return false;
+      } else if (currentCategory === "workflow-vlan") {
+        if (cmd.id !== "workflow-vlan-creation") return false;
+      } else if (currentCategory === "workflow-ipsec") {
+        if (cmd.id !== "workflow-ipsec-creation") return false;
+      } else if (currentCategory === "reference-decoder") {
+        return false;
+      } else if (cmd.category !== currentCategory) {
+        return false;
+      }
+    }
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
@@ -2497,15 +2636,74 @@ function getFilteredCommands() {
   });
 }
 
-function updateCategoryCounts() {
-  const counts = { all: COMMANDS.length };
+function updateSectionCounts() {
+  const counts = { policy: 0, sdwan: 0, interfaces: 0, vpn: 0, troubleshoot: 0 };
   COMMANDS.forEach(cmd => {
-    counts[cmd.category] = (counts[cmd.category] || 0) + 1;
+    const sec = getCommandSection(cmd);
+    if (counts[sec] !== undefined) counts[sec]++;
   });
 
-  Object.entries(counts).forEach(([cat, cnt]) => {
-    const el = document.getElementById(`count-${cat}`);
+  Object.entries(counts).forEach(([sec, cnt]) => {
+    const el = document.getElementById(`section-count-${sec}`);
     if (el) el.textContent = cnt;
+  });
+}
+
+function renderSidebar() {
+  const sectionConfig = SECTIONS[currentSection] || SECTIONS.policy;
+  const headingEl = document.getElementById("sidebar-section-heading");
+  if (headingEl) {
+    headingEl.textContent = sectionConfig.title;
+  }
+
+  const navEl = document.getElementById("category-nav");
+  if (!navEl) return;
+
+  const sectionCmds = COMMANDS.filter(cmd => getCommandSection(cmd) === currentSection);
+
+  navEl.innerHTML = sectionConfig.categories.map(cat => {
+    let count = 0;
+    if (cat.id === "all") {
+      count = sectionCmds.length;
+    } else if (cat.id === "workflow-route") {
+      count = sectionCmds.filter(c => c.id === "workflow-route-creation").length;
+    } else if (cat.id === "workflow-vlan") {
+      count = sectionCmds.filter(c => c.id === "workflow-vlan-creation").length;
+    } else if (cat.id === "workflow-ipsec") {
+      count = sectionCmds.filter(c => c.id === "workflow-ipsec-creation").length;
+    } else if (cat.id === "reference-decoder") {
+      count = "Ref";
+    } else {
+      count = sectionCmds.filter(c => c.category === cat.id).length;
+    }
+
+    const isActive = (cat.id === currentCategory) ? "active" : "";
+
+    return `
+      <button class="nav-item ${isActive}" data-category="${cat.id}">
+        <span class="nav-icon">${cat.icon}</span>
+        <span class="nav-text">${escapeHtml(cat.label)}</span>
+        <span class="nav-count">${count}</span>
+      </button>
+    `;
+  }).join("");
+
+  navEl.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const cat = item.getAttribute("data-category");
+      if (cat === "reference-decoder") {
+        const decBox = document.getElementById("log-decoder");
+        if (decBox) {
+          decBox.style.display = "block";
+          decBox.scrollIntoView({ behavior: "smooth" });
+        }
+        return;
+      }
+      navEl.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      item.classList.add("active");
+      currentCategory = cat;
+      renderCards();
+    });
   });
 }
 
@@ -2516,13 +2714,28 @@ function renderCards() {
   const filtered = getFilteredCommands();
   const host = currentVars.hostname || "FGT-OFFICE-FW01";
 
-  countText.textContent = `Showing ${filtered.length} of ${COMMANDS.length} FortiOS CLI operations & templates`;
+  // Hide or show bottom reference decoder tables
+  const decoderBox = document.getElementById("log-decoder");
+  if (decoderBox) {
+    if (currentSection === "troubleshoot" || currentCategory === "reference-decoder") {
+      decoderBox.style.display = "block";
+    } else {
+      decoderBox.style.display = "none";
+    }
+  }
+
+  const secTitle = SECTIONS[currentSection]?.title || "FortiOS Operations";
+  if (searchQuery) {
+    countText.textContent = `Search results: ${filtered.length} operations matching "${searchQuery}"`;
+  } else {
+    countText.textContent = `Showing ${filtered.length} operations in ${secTitle} • FortiOS v7.2 / v7.4 / v7.6`;
+  }
 
   if (filtered.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+      <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted); grid-column: 1 / -1;">
         <p style="font-size: 1.15rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem;">No matching FortiOS operations found</p>
-        <p style="font-size: 0.8rem;">Try clearing your search query or switching diagnostic presets above.</p>
+        <p style="font-size: 0.8rem;">Try clearing your search query or selecting "All" from the sidebar navigation.</p>
       </div>
     `;
     return;
@@ -2544,7 +2757,8 @@ function renderCards() {
             <div class="cmd-title-wrap">
               <div class="cmd-meta">
                 <span class="category-tag" style="background-color: rgba(239, 68, 68, 0.2); color: #ff8080; border-color: rgba(239, 68, 68, 0.4);">🚨 ERROR LOG RESOLVER</span>
-                <span class="zero-db-tag" style="font-size: 0.6rem;">FIND & FIX</span>
+                <span class="fw-badge">FortiOS 7.2 • 7.4 • 7.6</span>
+                <span class="zero-db-tag" style="font-size: 0.6rem;">SMOKING GUN FIX</span>
               </div>
               <h3 class="cmd-title">${escapeHtml(cmd.title)}</h3>
             </div>
@@ -2594,7 +2808,7 @@ function renderCards() {
             <div class="fix-box-header">
               <div class="fix-label">
                 <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 011 1v1a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                 </svg>
                 STEP 3: EXACT CLI CONFIGURATION FIX (COPY & APPLY)
               </div>
@@ -2648,9 +2862,9 @@ function renderCards() {
     if (isTemplate) {
       badgeHtml = `<span class="template-badge">CONFIG TEMPLATE</span>`;
     } else if (isWorkflow) {
-      badgeHtml = `<span class="template-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">STEP-BY-STEP PREREQ WORKFLOW</span>`;
+      badgeHtml = `<span class="template-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">STEP-BY-STEP WORKFLOW</span>`;
     } else if (isSyntax) {
-      badgeHtml = `<span class="template-badge" style="background: rgba(234, 179, 8, 0.2); color: #facc15; border-color: rgba(234, 179, 8, 0.4);">CLI PARSE ERROR SHIELD</span>`;
+      badgeHtml = `<span class="template-badge" style="background: rgba(234, 179, 8, 0.2); color: #facc15; border-color: rgba(234, 179, 8, 0.4);">SYNTAX PARSER SHIELD</span>`;
     } else if (isMigration) {
       badgeHtml = `<span class="template-badge" style="background: rgba(139, 92, 246, 0.2); color: #c084fc; border-color: rgba(139, 92, 246, 0.4);">ZERO-LOSS MIGRATION</span>`;
     } else if (isSdwan) {
@@ -2661,7 +2875,7 @@ function renderCards() {
       badgeHtml = `<span class="template-badge" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">INTERFACE CONFIG</span>`;
     }
 
-    const buttonLabel = isTemplate ? "Copy Template" : isWorkflow ? "Copy Full Workflow" : isSyntax ? "Copy Syntax Fix" : isMigration ? "Copy Migration Plan" : isSdwan ? "Copy SD-WAN Block" : isPbr ? "Copy PBR Rule" : "Copy Command";
+    const buttonLabel = isTemplate ? "Copy Template" : isWorkflow ? "Copy Workflow" : isSyntax ? "Copy Syntax Fix" : isMigration ? "Copy Migration Plan" : isSdwan ? "Copy SD-WAN Block" : isPbr ? "Copy PBR Rule" : "Copy Command";
 
     return `
       <div class="cmd-card ${cardExtraClass}" id="card-${cmd.id}">
@@ -2669,8 +2883,8 @@ function renderCards() {
           <div class="cmd-title-wrap">
             <div class="cmd-meta">
               <span class="category-tag">${cmd.category}</span>
+              <span class="fw-badge">FortiOS 7.2 • 7.4 • 7.6</span>
               ${badgeHtml}
-              ${cmd.presets.map(p => `<span class="zero-db-tag" style="font-size: 0.58rem;">${p.replace("preset-", "").replace("-", " ")}</span>`).join("")}
             </div>
             <h3 class="cmd-title">${escapeHtml(cmd.title)}</h3>
           </div>
@@ -2809,7 +3023,7 @@ function sendToWebCli(commandText) {
   entry.className = "cli-entry";
   entry.innerHTML = `
     <div class="cli-entry-cmd">${escapeHtml(host)} # <span style="color:#ffffff;">${escapeHtml(commandText)}</span></div>
-    <div class="cli-entry-res">[Command ready for execution on ${escapeHtml(host)}]</div>
+    <div class="cli-entry-res">[Command loaded for execution on ${escapeHtml(host)}]</div>
   `;
   history.appendChild(entry);
 
@@ -2867,7 +3081,7 @@ function setupCliConsole() {
         stdin.value = "";
         return;
       } else if (val === "get system status") {
-        response = `Version: FortiGate-100F v7.4.4,build2573,240417 (GA.M)\nHost: ${host}\nCluster: a-p (Sync OK)\nStatus: Normal`;
+        response = `Version: FortiGate-100F v7.4.4,build2573,240417 (GA.M)\nHost: ${host}\nCluster: a-p (Sync OK)\nOS Compatibility: FortiOS v7.2, v7.4, v7.6\nStatus: Normal`;
       } else if (val.startsWith("diagnose")) {
         response = `[FortiOS Diagnostic Hook Initiated for: ${val}]`;
       } else if (val.startsWith("config")) {
@@ -2891,25 +3105,34 @@ function setupCliConsole() {
 
 // Setup Event Listeners
 function setupEvents() {
-  // Category Nav
-  document.querySelectorAll(".nav-item").forEach(item => {
-    item.addEventListener("click", () => {
-      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-      item.classList.add("active");
-      currentCategory = item.getAttribute("data-category");
+  // Master Section Tabs
+  document.querySelectorAll(".section-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".section-tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      currentSection = tab.getAttribute("data-section");
+      currentCategory = "all";
+      try {
+        localStorage.setItem("fgt_portal_section", currentSection);
+      } catch (e) {}
+      renderSidebar();
       renderCards();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
 
-  // Incident Presets
-  document.querySelectorAll(".pill-btn").forEach(pill => {
-    pill.addEventListener("click", () => {
-      document.querySelectorAll(".pill-btn").forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-      currentPreset = pill.getAttribute("data-filter");
-      renderCards();
+  // Toggle Advanced Variables Drawer
+  const toggleAdvBtn = document.getElementById("toggle-adv-vars");
+  const advDrawer = document.getElementById("advanced-vars-panel");
+  if (toggleAdvBtn && advDrawer) {
+    toggleAdvBtn.addEventListener("click", () => {
+      const isHidden = advDrawer.classList.toggle("hidden");
+      toggleAdvBtn.classList.toggle("active", !isHidden);
+      toggleAdvBtn.innerHTML = isHidden 
+        ? `<svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg> More Variables`
+        : `<svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg> Close Variables`;
     });
-  });
+  }
 
   // Search
   const searchInput = document.getElementById("global-search");
@@ -2996,7 +3219,15 @@ function setupEvents() {
 document.addEventListener("DOMContentLoaded", () => {
   loadStoredVars();
   syncInputFields();
-  updateCategoryCounts();
+  updateSectionCounts();
+
+  // Activate stored section tab
+  document.querySelectorAll(".section-tab").forEach(tab => {
+    tab.classList.toggle("active", tab.getAttribute("data-section") === currentSection);
+  });
+
+  renderSidebar();
   setupEvents();
   renderCards();
 });
+

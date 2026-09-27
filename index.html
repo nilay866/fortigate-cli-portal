@@ -66,7 +66,7 @@
         <!-- FortiOS Status indicators -->
         <div class="sys-badge-group">
           <span class="status-indicator-dot" title="FortiOS System Online"></span>
-          <span class="firmware-tag">FortiOS v7.4.4</span>
+          <span class="firmware-tag">FortiOS v7.2 • v7.4 • v7.6</span>
         </div>
 
         <button id="theme-toggle" class="forti-icon-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
@@ -84,285 +84,157 @@
       </div>
     </header>
 
-    <!-- LIVE VARIABLE INJECTOR (OFFICE PARAMETERS) -->
-    <section class="forti-param-injector" aria-label="Live parameter customizer">
-      <div class="injector-header">
-        <div class="injector-title">
-          <span class="live-pulse"></span>
-          <strong>Office Network Variables</strong>
-          <span class="injector-subtitle">Changes below inject into all FortiGate CLI commands instantly</span>
+    <!-- MASTER SECTION TABS: CLEAN 5-SECTION ARCHITECTURE -->
+    <nav class="forti-master-tabs" aria-label="Main Sections Navigation">
+      <button class="section-tab active" data-section="policy">
+        <span class="tab-icon">📜</span>
+        <span class="tab-title">1. Policies &amp; Objects</span>
+        <span class="tab-count" id="section-count-policy">0</span>
+      </button>
+      <button class="section-tab" data-section="sdwan">
+        <span class="tab-icon">🌐</span>
+        <span class="tab-title">2. SD-WAN &amp; Routing</span>
+        <span class="tab-count" id="section-count-sdwan">0</span>
+      </button>
+      <button class="section-tab" data-section="interfaces">
+        <span class="tab-icon">🔌</span>
+        <span class="tab-title">3. Interfaces &amp; Migration</span>
+        <span class="tab-count" id="section-count-interfaces">0</span>
+      </button>
+      <button class="section-tab" data-section="vpn">
+        <span class="tab-icon">🔐</span>
+        <span class="tab-title">4. VPNs (IPsec &amp; SSL)</span>
+        <span class="tab-count" id="section-count-vpn">0</span>
+      </button>
+      <button class="section-tab" data-section="troubleshoot">
+        <span class="tab-icon">🚨</span>
+        <span class="tab-title">5. Troubleshooting &amp; Diag</span>
+        <span class="tab-count" id="section-count-troubleshoot">0</span>
+      </button>
+    </nav>
+
+    <!-- SLIM QUICK VARIABLE BAR (4 CORE PARAMS + COLLAPSIBLE ADVANCED DRAWER) -->
+    <section class="forti-quick-bar" aria-label="Network parameter injector">
+      <div class="quick-bar-main">
+        <div class="quick-inputs-group">
+          <div class="quick-field">
+            <label for="var-client-ip">Client / Src IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">src</span>
+              <input type="text" id="var-client-ip" value="192.168.1.100" placeholder="192.168.1.100">
+            </div>
+          </div>
+
+          <div class="quick-field">
+            <label for="var-server-ip">Server / Dst IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">dst</span>
+              <input type="text" id="var-server-ip" value="10.20.30.50" placeholder="10.20.30.50">
+            </div>
+          </div>
+
+          <div class="quick-field">
+            <label for="var-port">Service Port</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">port</span>
+              <input type="text" id="var-port" value="443" placeholder="443">
+            </div>
+          </div>
+
+          <div class="quick-field">
+            <label for="var-interface">Interface</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">nic</span>
+              <input type="text" id="var-interface" value="any" placeholder="any, port1, wan1">
+            </div>
+          </div>
         </div>
-        <div class="injector-actions">
-          <button id="reset-variables-btn" class="btn-subtle" title="Reset all variables to defaults">Reset Defaults</button>
-          <span class="zero-db-tag">Zero Database &bull; Local Only</span>
+
+        <div class="quick-actions-group">
+          <button id="toggle-adv-vars" class="btn-adv-toggle" title="Show additional FortiGate variables">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="13" height="13">
+              <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+            </svg>
+            More Variables
+          </button>
+          <button id="reset-variables-btn" class="btn-subtle" title="Reset variables to defaults">Reset</button>
+          <span class="zero-db-tag">Zero Database</span>
         </div>
       </div>
 
-      <div class="injector-grid">
-        <div class="injector-field">
-          <label for="var-hostname">Firewall Hostname</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">FGT</span>
-            <input type="text" id="var-hostname" value="FGT-OFFICE-FW01" placeholder="FGT-OFFICE-FW01">
+      <!-- Collapsible Drawer for Advanced Parameters -->
+      <div id="advanced-vars-panel" class="advanced-vars-drawer hidden">
+        <div class="adv-grid">
+          <div class="quick-field">
+            <label for="var-hostname">Firewall Hostname</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">fgt</span>
+              <input type="text" id="var-hostname" value="FGT-OFFICE-FW01" placeholder="FGT-OFFICE-FW01">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-client-ip">Client / Source IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">src</span>
-            <input type="text" id="var-client-ip" value="192.168.1.100" placeholder="192.168.1.100">
+          <div class="quick-field">
+            <label for="var-fortigate-ip">FortiGate LAN IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">lan</span>
+              <input type="text" id="var-fortigate-ip" value="192.168.1.1" placeholder="192.168.1.1">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-server-ip">Server / Dest IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">dst</span>
-            <input type="text" id="var-server-ip" value="10.20.30.50" placeholder="10.20.30.50">
+          <div class="quick-field">
+            <label for="var-peer-ip">Remote Peer Public IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">vpn</span>
+              <input type="text" id="var-peer-ip" value="203.0.113.50" placeholder="203.0.113.50">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-port">Service Port</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">port</span>
-            <input type="text" id="var-port" value="443" placeholder="443">
+          <div class="quick-field">
+            <label for="var-tunnel-name">IPsec Tunnel Name</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">vpn</span>
+              <input type="text" id="var-tunnel-name" value="VPN_Branch_Site" placeholder="VPN_Branch_Site">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-interface">Interface</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">nic</span>
-            <input type="text" id="var-interface" value="any" placeholder="any, port1, wan1">
+          <div class="quick-field">
+            <label for="var-bgp-ip">BGP Peer IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">bgp</span>
+              <input type="text" id="var-bgp-ip" value="198.51.100.1" placeholder="198.51.100.1">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-fortigate-ip">FortiGate LAN IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">lan</span>
-            <input type="text" id="var-fortigate-ip" value="192.168.1.1" placeholder="192.168.1.1">
+          <div class="quick-field">
+            <label for="var-username">SSL VPN User</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">user</span>
+              <input type="text" id="var-username" value="john.smith" placeholder="john.smith">
+            </div>
           </div>
-        </div>
 
-        <div class="injector-field">
-          <label for="var-peer-ip">Remote Peer Public IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">vpn</span>
-            <input type="text" id="var-peer-ip" value="203.0.113.50" placeholder="203.0.113.50">
-          </div>
-        </div>
-
-        <div class="injector-field">
-          <label for="var-tunnel-name">IPsec Tunnel Name</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">vpn</span>
-            <input type="text" id="var-tunnel-name" value="VPN_Branch_Site" placeholder="VPN_Branch_Site">
-          </div>
-        </div>
-
-        <div class="injector-field">
-          <label for="var-bgp-ip">BGP Peer IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">bgp</span>
-            <input type="text" id="var-bgp-ip" value="198.51.100.1" placeholder="198.51.100.1">
-          </div>
-        </div>
-
-        <div class="injector-field">
-          <label for="var-username">SSL VPN User</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">user</span>
-            <input type="text" id="var-username" value="john.smith" placeholder="john.smith">
-          </div>
-        </div>
-
-        <div class="injector-field">
-          <label for="var-tftp-ip">TFTP Server IP</label>
-          <div class="injector-input-wrap">
-            <span class="field-prefix">tftp</span>
-            <input type="text" id="var-tftp-ip" value="192.168.1.200" placeholder="192.168.1.200">
+          <div class="quick-field">
+            <label for="var-tftp-ip">TFTP Backup IP</label>
+            <div class="quick-input-wrap">
+              <span class="quick-prefix">tftp</span>
+              <input type="text" id="var-tftp-ip" value="192.168.1.200" placeholder="192.168.1.200">
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FORTIOS INCIDENT DIAGNOSTIC PRESETS (WIZARD) -->
-    <section class="forti-wizard-bar">
-      <div class="wizard-label">
-        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
-          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
-        </svg>
-        Diagnostic Scenarios & Templates:
-      </div>
-      <div class="wizard-pills" id="wizard-pills">
-        <button class="pill-btn active" data-filter="all">All Operations</button>
-        <button class="pill-btn" data-filter="preset-workflow">📋 Step-by-Step Prereq Builder</button>
-        <button class="pill-btn" data-filter="preset-sdwan">🌐 SD-WAN & Performance SLA</button>
-        <button class="pill-btn" data-filter="preset-migration">🔄 Reference Migration (Zero Loss)</button>
-        <button class="pill-btn" data-filter="preset-interfaces">🔌 Interface & LACP Trunk</button>
-        <button class="pill-btn" data-filter="preset-pbr">🧭 Policy Routes (PBR)</button>
-        <button class="pill-btn" data-filter="preset-syntax">🛡️ Parse Errors & Syntax Shield</button>
-        <button class="pill-btn" data-filter="preset-cli-ops">⌨️ Pure CLI Operations</button>
-        <button class="pill-btn" data-filter="preset-error-logs">🚨 Error Logs & Fixes</button>
-        <button class="pill-btn" data-filter="preset-policy-templates">📜 Policy Templates</button>
-        <button class="pill-btn" data-filter="preset-object-templates">📦 Objects & Groups</button>
-        <button class="pill-btn" data-filter="preset-vip-templates">🔀 VIP / Port Forward</button>
-        <button class="pill-btn" data-filter="preset-packet-drop">🚫 Traffic Dropped / Blocked</button>
-        <button class="pill-btn" data-filter="preset-vpn-down">🔒 IPsec VPN Down</button>
-        <button class="pill-btn" data-filter="preset-ssl-vpn">👤 SSL VPN Issues</button>
-        <button class="pill-btn" data-filter="preset-asymmetric">🔄 Asymmetric / RPF Drop</button>
-        <button class="pill-btn" data-filter="preset-stuck-session">⚡ Clear Stuck Sessions</button>
-        <button class="pill-btn" data-filter="preset-high-cpu">🔥 High CPU / Crash</button>
-      </div>
-    </section>
-
-    <!-- MAIN BODY: FORTIOS NAVIGATION SIDEBAR + WORKBENCH -->
+    <!-- MAIN WORKSPACE: DYNAMIC SIDEBAR + CARDS -->
     <div class="forti-workspace">
-      <!-- FORTIOS STYLE SIDEBAR MENU -->
+      <!-- DYNAMIC SIDEBAR MENU -->
       <aside class="forti-sidebar">
-        <div class="sidebar-header-label">FORTIOS NAVIGATION</div>
+        <div class="sidebar-header-wrap">
+          <span class="sidebar-section-eyebrow">ACTIVE SECTION</span>
+          <h2 class="sidebar-section-title" id="sidebar-section-heading">Policies &amp; Objects</h2>
+        </div>
+
         <nav class="forti-nav-tree" id="category-nav">
-          <button class="nav-item active" data-category="all">
-            <span class="nav-icon">📁</span>
-            <span class="nav-text">All Commands</span>
-            <span class="nav-count" id="count-all">0</span>
-          </button>
-
-          <div class="nav-group-title">STEP-BY-STEP WORKFLOWS</div>
-          <button class="nav-item" data-category="workflow">
-            <span class="nav-icon">📋</span>
-            <span class="nav-text">Prereq & Policy Builder</span>
-            <span class="nav-count" id="count-workflow">0</span>
-          </button>
-          <button class="nav-item" data-category="migration">
-            <span class="nav-icon">🔄</span>
-            <span class="nav-text">Reference Migration (Zero Loss)</span>
-            <span class="nav-count" id="count-migration">0</span>
-          </button>
-          <button class="nav-item" data-category="syntax-shield">
-            <span class="nav-icon">🛡️</span>
-            <span class="nav-text">Parse Error & Syntax Shield</span>
-            <span class="nav-count" id="count-syntax-shield">0</span>
-          </button>
-
-          <div class="nav-group-title">SD-WAN & ROUTING</div>
-          <button class="nav-item" data-category="sdwan">
-            <span class="nav-icon">🌐</span>
-            <span class="nav-text">SD-WAN & SLA Steering</span>
-            <span class="nav-count" id="count-sdwan">0</span>
-          </button>
-          <button class="nav-item" data-category="pbr">
-            <span class="nav-icon">🧭</span>
-            <span class="nav-text">Policy Routes (PBR)</span>
-            <span class="nav-count" id="count-pbr">0</span>
-          </button>
-          <button class="nav-item" data-category="route-templates">
-            <span class="nav-icon">🛣️</span>
-            <span class="nav-text">Routes & Gateways</span>
-            <span class="nav-count" id="count-route-templates">0</span>
-          </button>
-
-          <div class="nav-group-title">INTERFACES & TRUNKING</div>
-          <button class="nav-item" data-category="interfaces">
-            <span class="nav-icon">🔌</span>
-            <span class="nav-text">Interfaces & LACP Aggregate</span>
-            <span class="nav-count" id="count-interfaces">0</span>
-          </button>
-
-          <div class="nav-group-title">CLI-ONLY ADMINISTRATION</div>
-          <button class="nav-item" data-category="cli-ops">
-            <span class="nav-icon">⌨️</span>
-            <span class="nav-text">CLI Ops & Rule Ordering</span>
-            <span class="nav-count" id="count-cli-ops">0</span>
-          </button>
-          
-          <div class="nav-group-title">ERROR & LOG RESOLVER</div>
-          <button class="nav-item" data-category="error-logs">
-            <span class="nav-icon">🚨</span>
-            <span class="nav-text">Error Logs: Find & Fix</span>
-            <span class="nav-count" id="count-error-logs">0</span>
-          </button>
-
-          <div class="nav-group-title">CONFIG & OBJECT TEMPLATES</div>
-          <button class="nav-item" data-category="policy-templates">
-            <span class="nav-icon">📜</span>
-            <span class="nav-text">Firewall Policies</span>
-            <span class="nav-count" id="count-policy-templates">0</span>
-          </button>
-          <button class="nav-item" data-category="object-templates">
-            <span class="nav-icon">📦</span>
-            <span class="nav-text">Addresses & Groups</span>
-            <span class="nav-count" id="count-object-templates">0</span>
-          </button>
-          <button class="nav-item" data-category="vip-templates">
-            <span class="nav-icon">🔀</span>
-            <span class="nav-text">VIP & Port Forward</span>
-            <span class="nav-count" id="count-vip-templates">0</span>
-          </button>
-
-          <div class="nav-group-title">DIAGNOSTICS & PACKETS</div>
-          <button class="nav-item" data-category="flow">
-            <span class="nav-icon">🔬</span>
-            <span class="nav-text">Debug Flow (Policy/NAT)</span>
-            <span class="nav-count" id="count-flow">0</span>
-          </button>
-          <button class="nav-item" data-category="sniffer">
-            <span class="nav-icon">📡</span>
-            <span class="nav-text">Packet Sniffer</span>
-            <span class="nav-count" id="count-sniffer">0</span>
-          </button>
-          <button class="nav-item" data-category="session">
-            <span class="nav-icon">📑</span>
-            <span class="nav-text">Active Session Table</span>
-            <span class="nav-count" id="count-session">0</span>
-          </button>
-          <button class="nav-item" data-category="ping">
-            <span class="nav-icon">📍</span>
-            <span class="nav-text">Ping & Traceroute</span>
-            <span class="nav-count" id="count-ping">0</span>
-          </button>
-
-          <div class="nav-group-title">NETWORK & SECURITY</div>
-          <button class="nav-item" data-category="routing">
-            <span class="nav-icon">🧭</span>
-            <span class="nav-text">Routing & BGP Table</span>
-            <span class="nav-count" id="count-routing">0</span>
-          </button>
-          <button class="nav-item" data-category="network">
-            <span class="nav-icon">🔌</span>
-            <span class="nav-text">Interface & ARP</span>
-            <span class="nav-count" id="count-network">0</span>
-          </button>
-          <button class="nav-item" data-category="ipsec">
-            <span class="nav-icon">🔐</span>
-            <span class="nav-text">IPsec Tunnels & IKE</span>
-            <span class="nav-count" id="count-ipsec">0</span>
-          </button>
-          <button class="nav-item" data-category="sslvpn">
-            <span class="nav-icon">👥</span>
-            <span class="nav-text">SSL VPN Users & Auth</span>
-            <span class="nav-count" id="count-sslvpn">0</span>
-          </button>
-
-          <div class="nav-group-title">SYSTEM OPERATIONS</div>
-          <button class="nav-item" data-category="system">
-            <span class="nav-icon">⚡</span>
-            <span class="nav-text">CPU, Top & Crashlogs</span>
-            <span class="nav-count" id="count-system">0</span>
-          </button>
-          <button class="nav-item" data-category="ha">
-            <span class="nav-icon">👥</span>
-            <span class="nav-text">HA Cluster & Sync</span>
-            <span class="nav-count" id="count-ha">0</span>
-          </button>
-          <button class="nav-item" data-category="backup">
-            <span class="nav-icon">💾</span>
-            <span class="nav-text">Backup & Revisions</span>
-            <span class="nav-count" id="count-backup">0</span>
-          </button>
+          <!-- Rendered dynamically by app.js based on active section -->
         </nav>
 
         <!-- FortiGate System Summary Card -->
@@ -377,7 +249,7 @@
           </div>
           <div class="widget-row">
             <span class="w-label">Firmware:</span>
-            <span class="w-val">v7.4.4 build2573</span>
+            <span class="w-val os-val">v7.2 • v7.4 • v7.6</span>
           </div>
           <div class="widget-row">
             <span class="w-label">ASIC Acceleration:</span>
@@ -411,12 +283,12 @@
           <!-- Dynamically populated by app.js -->
         </div>
 
-        <!-- FORTIOS LOG DECODER -->
-        <section class="forti-decoder-box" id="log-decoder">
+        <!-- FORTIOS LOG DECODER (SHOWN ONLY IN TROUBLESHOOTING SECTION) -->
+        <section class="forti-decoder-box" id="log-decoder" style="display: none;">
           <div class="decoder-header">
-            <span class="forti-badge-alert">TROUBLESHOOTING REFERENCE</span>
-            <h2>FortiOS CLI Log Decoder: What the Messages Mean</h2>
-            <p>Diagnose drops, VPN renegotiation failures, and policy rejections with this Fortinet root cause matrix.</p>
+            <span class="forti-badge-alert">TROUBLESHOOTING REFERENCE MATRIX</span>
+            <h2>FortiOS CLI Log Decoder: Root Cause & Actionable Fixes</h2>
+            <p>Diagnose drops, VPN renegotiation failures, and policy rejections with this FortiOS 7.2 / 7.4 / 7.6 root cause matrix.</p>
           </div>
 
           <div class="decoder-table-scroll">

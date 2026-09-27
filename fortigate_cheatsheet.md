@@ -1223,7 +1223,7 @@ config firewall policy
     set action accept                           # [KEEP]: "accept" allows the traffic ("deny" would block it)
     set schedule "always"                       # [KEEP]: "always" keeps the rule active 24/7/365
     set service "HTTP" "HTTPS" "DNS"            # [CHANGE/KEEP]: Allowed ports (use "ALL", or list services like "HTTP" "HTTPS" "DNS")
-    set utm-status enable                       # [KEEP]: Enables security antivirus / web filter inspection
+    # Note: FortiOS 7.2 / 7.4 / 7.6 automatically activates UTM when profiles are assigned (do NOT use deprecated 'set utm-status enable')
     set ssl-ssh-profile "certificate-inspection"# [KEEP]: Standard certificate inspection (prevents SSL warnings on user PCs)
     set av-profile "default"                    # [OPTIONAL]: Antivirus scanning (delete line if not using AV license)
     set webfilter-profile "default"             # [OPTIONAL]: Web filtering (delete line if not using Web Filter license)
@@ -1382,7 +1382,7 @@ config firewall policy
     set action accept                           # [KEEP]: Allows connection
     set schedule "always"                       # [KEEP]: Active 24/7
     set service "SVC_Custom_<port>"             # [CHANGE]: Port service matching the mapped port
-    set utm-status enable                       # [KEEP]: Scans inbound traffic for malware/attacks
+    # Note: FortiOS 7.2 / 7.4 / 7.6 activates UTM automatically via ips-sensor:
     set ips-sensor "default"                    # [OPTIONAL]: Intrusion Prevention sensor (blocks exploits)
     set nat disable                             # [CRITICAL - KEEP 'disable']: MUST be disabled! FortiOS handles DNAT automatically.
     set logtraffic all                          # [KEEP]: Logs all inbound connection attempts
