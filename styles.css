@@ -1,0 +1,1274 @@
+/* ==========================================================================
+   Fortinet FortiGate® - Web CLI & Troubleshooting Operations Portal
+   Authentic FortiOS 7.x NOC Aesthetic
+   ========================================================================== */
+
+:root {
+  --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, 'Courier New', monospace;
+
+  /* Fortinet Official Colors */
+  --forti-red: #ee3124;
+  --forti-red-hover: #d7281c;
+  --forti-red-glow: rgba(238, 49, 36, 0.25);
+  --forti-dark-top: #121824;
+  --forti-dark-side: #182232;
+  --forti-dark-body: #0d121c;
+  --forti-dark-card: #151e2c;
+  --forti-dark-card-hover: #1b2638;
+  --forti-border: #233146;
+  --forti-border-light: #2d3e58;
+
+  /* Terminal Colors */
+  --term-bg: #090d14;
+  --term-header: #101622;
+  --term-text: #e2e8f0;
+  --term-prompt: #48bb78;
+
+  /* Status Accents */
+  --green-online: #10b981;
+  --green-glow: rgba(16, 185, 129, 0.3);
+  --blue-vdom: #38bdf8;
+  --blue-vdom-bg: rgba(56, 189, 248, 0.12);
+  --amber-warn: #f59e0b;
+  --cyan-accent: #06b6d4;
+
+  /* Dynamic Parameter Highlights */
+  --val-highlight-bg: #0c4a6e;
+  --val-highlight-text: #7dd3fc;
+  --val-highlight-border: #0284c7;
+
+  /* UI Tokens */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* Light Theme Variables */
+body.light-theme {
+  --forti-dark-top: #1e293b;
+  --forti-dark-side: #f8fafc;
+  --forti-dark-body: #f1f5f9;
+  --forti-dark-card: #ffffff;
+  --forti-dark-card-hover: #f8fafc;
+  --forti-border: #e2e8f0;
+  --forti-border-light: #cbd5e1;
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+
+  --val-highlight-bg: #0284c7;
+  --val-highlight-text: #f0f9ff;
+  --val-highlight-border: #0369a1;
+}
+
+/* Global Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--forti-dark-body);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   1. AUTHENTIC FORTIOS NAVBAR
+   ========================================================================== */
+.forti-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--forti-dark-top);
+  border-bottom: 2px solid var(--forti-red);
+  padding: 0.6rem 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.forti-logo-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.fortinet-brand-svg {
+  width: 130px;
+  height: 26px;
+}
+
+.vdom-pill-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.device-name-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #1e293b;
+  border: 1px solid var(--forti-border);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.vdom-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--blue-vdom);
+  background-color: var(--blue-vdom-bg);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+/* Search Box */
+.header-center {
+  flex: 1;
+  max-width: 520px;
+}
+
+.forti-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  width: 15px;
+  height: 15px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.forti-search input {
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 2.3rem;
+  background-color: #0b0f17;
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.825rem;
+  font-family: var(--font-ui);
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.forti-search input:focus {
+  border-color: var(--forti-red);
+  box-shadow: 0 0 0 2px var(--forti-red-glow);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  color: #ffffff;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* FortiOS CLI Drawer Button */
+.forti-cli-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  border: 1px solid var(--forti-border-light);
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.forti-cli-btn:hover {
+  background: #253349;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.cli-prompt-icon {
+  color: var(--green-online);
+  font-weight: 900;
+}
+
+.sys-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #0b0f17;
+  border: 1px solid var(--forti-border);
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.status-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--green-online);
+  box-shadow: 0 0 6px var(--green-online);
+}
+
+.firmware-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.forti-icon-btn {
+  background: transparent;
+  border: 1px solid var(--forti-border);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.forti-icon-btn:hover {
+  color: #ffffff;
+  border-color: var(--text-dim);
+}
+
+.user-profile-badge {
+  background-color: var(--forti-red);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ==========================================================================
+   2. LIVE OFFICE PARAMETER INJECTOR (TOP BAR)
+   ========================================================================== */
+.forti-param-injector {
+  background: linear-gradient(180deg, #151e2c 0%, #111824 100%);
+  border-bottom: 1px solid var(--forti-border);
+  padding: 0.75rem 1.25rem 0.85rem 1.25rem;
+}
+
+.injector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.injector-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: var(--text-main);
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--forti-red);
+  box-shadow: 0 0 8px var(--forti-red);
+  animation: pulse-red 2s infinite ease-in-out;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.9); }
+}
+
+.injector-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.injector-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.btn-subtle {
+  background: transparent;
+  border: 1px solid var(--forti-border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-subtle:hover {
+  color: #ffffff;
+  border-color: var(--text-dim);
+}
+
+.zero-db-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--green-online);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.injector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+.injector-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.injector-field label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.injector-input-wrap {
+  display: flex;
+  align-items: center;
+  background-color: #0b0f17;
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.injector-input-wrap:focus-within {
+  border-color: var(--forti-red);
+  box-shadow: 0 0 0 2px var(--forti-red-glow);
+}
+
+.field-prefix {
+  background-color: #172130;
+  color: var(--forti-red);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.35rem 0.45rem;
+  border-right: 1px solid var(--forti-border);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.injector-input-wrap input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.3rem 0.45rem;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   3. DIAGNOSTIC SCENARIOS (INCIDENT WIZARD)
+   ========================================================================== */
+.forti-wizard-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1.25rem;
+  background-color: var(--forti-dark-top);
+  border-bottom: 1px solid var(--forti-border);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.wizard-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.wizard-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pill-btn {
+  background-color: #1a2433;
+  border: 1px solid var(--forti-border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pill-btn:hover {
+  background-color: #243247;
+  color: #ffffff;
+  border-color: var(--forti-border-light);
+}
+
+.pill-btn.active {
+  background-color: var(--forti-red);
+  color: #ffffff;
+  border-color: var(--forti-red);
+  font-weight: 700;
+  box-shadow: 0 0 10px var(--forti-red-glow);
+}
+
+/* ==========================================================================
+   4. FORTIOS WORKSPACE: SIDEBAR & MAIN
+   ========================================================================== */
+.forti-workspace {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Authentic FortiOS Sidebar */
+.forti-sidebar {
+  background-color: var(--forti-dark-side);
+  border-right: 1px solid var(--forti-border);
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-header-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0 0.5rem;
+}
+
+.forti-nav-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nav-group-title {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0.65rem 0.5rem 0.2rem 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 0.4rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+  width: 100%;
+}
+
+.nav-item:hover {
+  background-color: #212d40;
+  color: #ffffff;
+}
+
+.nav-item.active {
+  background-color: rgba(238, 49, 36, 0.12);
+  color: #ffffff;
+  border-left: 3px solid var(--forti-red);
+  font-weight: 700;
+}
+
+.nav-icon {
+  font-size: 0.95rem;
+  width: 18px;
+  text-align: center;
+}
+
+.nav-text {
+  flex: 1;
+}
+
+.nav-count {
+  font-size: 0.68rem;
+  background-color: #101622;
+  border: 1px solid var(--forti-border);
+  color: var(--text-dim);
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+}
+
+.nav-item.active .nav-count {
+  background-color: rgba(238, 49, 36, 0.2);
+  color: var(--forti-red);
+  border-color: rgba(238, 49, 36, 0.4);
+}
+
+/* System Widget in Sidebar */
+.forti-system-widget {
+  margin-top: auto;
+  background: #111722;
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  font-size: 0.72rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.widget-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.forti-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: var(--forti-red);
+  border-radius: 50%;
+}
+
+.widget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.w-label {
+  color: var(--text-dim);
+}
+
+.w-val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.asic-badge {
+  color: #38bdf8;
+}
+
+.ha-ok {
+  color: var(--green-online);
+}
+
+/* ==========================================================================
+   5. MAIN CONTENT & COMMAND CARDS
+   ========================================================================== */
+.forti-content {
+  padding: 1.25rem 1.5rem 3rem 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.content-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--forti-border);
+}
+
+.results-stats {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.forti-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--forti-red);
+  border: 1px solid var(--forti-red);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.forti-btn-primary:hover {
+  background-color: var(--forti-red-hover);
+  box-shadow: 0 0 12px var(--forti-red-glow);
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+}
+
+.cmd-card {
+  background-color: var(--forti-dark-card);
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.15s ease;
+}
+
+.cmd-card:hover {
+  border-color: #3b5078;
+}
+
+.cmd-card-header {
+  padding: 0.85rem 1.15rem 0.65rem 1.15rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.cmd-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.cmd-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.category-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background-color: rgba(238, 49, 36, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(238, 49, 36, 0.3);
+}
+
+.cmd-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cmd-body {
+  padding: 0 1.15rem 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.scenario-box {
+  background-color: rgba(11, 16, 25, 0.6);
+  border-left: 3px solid var(--forti-red);
+  padding: 0.55rem 0.75rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.scenario-box strong {
+  color: #ffffff;
+  margin-right: 0.35rem;
+}
+
+/* Terminal Code Container */
+.terminal-block {
+  background-color: var(--term-bg);
+  border: 1px solid #1c2738;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--term-header);
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px solid #1c2738;
+}
+
+.terminal-left-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.terminal-prompt-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.terminal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.terminal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background-color: #1e2838;
+  border: 1px solid #2d3b55;
+  color: #ffffff;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.terminal-btn:hover {
+  background-color: #2b3952;
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.terminal-btn.copied {
+  background-color: rgba(16, 185, 129, 0.2);
+  border-color: var(--green-online);
+  color: var(--green-online);
+}
+
+.terminal-code {
+  padding: 0.85rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--term-text);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: all;
+}
+
+/* Injected parameter badge */
+.val-highlight {
+  background-color: var(--val-highlight-bg);
+  color: var(--val-highlight-text);
+  border: 1px solid var(--val-highlight-border);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+  font-weight: 700;
+  display: inline-block;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.3);
+}
+
+.comment-line {
+  color: #556987;
+  font-style: italic;
+  user-select: none;
+}
+
+.output-tip {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 0.45rem;
+  align-items: flex-start;
+  background-color: rgba(245, 158, 11, 0.05);
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(245, 158, 11, 0.3);
+}
+
+.output-tip-icon {
+  color: var(--amber-warn);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   6. FORTIOS LOG DECODER TABLE
+   ========================================================================== */
+.forti-decoder-box {
+  background-color: var(--forti-dark-card);
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+
+.forti-badge-alert {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: rgba(238, 49, 36, 0.15);
+  color: var(--forti-red);
+  border: 1px solid rgba(238, 49, 36, 0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.4rem;
+}
+
+.decoder-header h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.decoder-header p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.decoder-table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--forti-border);
+  border-radius: var(--radius-sm);
+}
+
+.forti-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.78rem;
+}
+
+.forti-table th {
+  background-color: #0b0f17;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--forti-border);
+}
+
+.forti-table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.forti-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.forti-table td strong {
+  color: #ffffff;
+}
+
+.forti-table code {
+  font-family: var(--font-mono);
+  background-color: var(--term-bg);
+  color: #38bdf8;
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  border: 1px solid #1c2738;
+}
+
+/* ==========================================================================
+   7. INTERACTIVE FORTIOS WEB CLI CONSOLE DRAWER
+   ========================================================================== */
+.cli-drawer {
+  position: fixed;
+  bottom: 0;
+  right: 20px;
+  width: 680px;
+  max-width: 90vw;
+  height: 380px;
+  background-color: #06090e;
+  border: 1px solid #2d3b55;
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cli-drawer.hidden {
+  display: none !important;
+}
+
+.cli-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #121824;
+  border-bottom: 1px solid #243048;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.cli-drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.cli-dot-green {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--green-online);
+  box-shadow: 0 0 6px var(--green-online);
+}
+
+.cli-header-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cli-drawer-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cli-ctrl-btn {
+  background: #1c2638;
+  border: 1px solid #2d3b55;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.cli-ctrl-btn:hover {
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+.cli-ctrl-btn.close-x {
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.1rem 0.4rem;
+}
+
+.cli-drawer-body {
+  padding: 0.85rem;
+  flex: 1;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--term-text);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cli-welcome {
+  color: #64748b;
+  font-size: 0.72rem;
+  border-bottom: 1px dashed #1e293b;
+  padding-bottom: 0.4rem;
+}
+
+#cli-output-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cli-entry-cmd {
+  color: #48bb78;
+  font-weight: 700;
+}
+
+.cli-entry-res {
+  color: #94a3b8;
+  white-space: pre-wrap;
+  margin-left: 0.5rem;
+}
+
+.cli-input-line {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  border-top: 1px solid #1a2332;
+  padding-top: 0.4rem;
+}
+
+.cli-prompt {
+  color: var(--green-online);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+#cli-stdin {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   8. TOAST NOTIFICATION
+   ========================================================================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background-color: #121a27;
+  color: #ffffff;
+  border: 1px solid var(--forti-red);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 10px var(--forti-red-glow);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 99999;
+}
+
+.toast-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--forti-red);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .forti-workspace {
+    grid-template-columns: 1fr;
+  }
+  .forti-sidebar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   9. ERROR LOG ANALYZER & CONFIG TEMPLATE SPECIAL STYLES
+   ========================================================================== */
+.log-analysis-card {
+  border-left: 4px solid var(--forti-red) !important;
+}
+
+.template-card {
+  border-left: 4px solid var(--blue-vdom) !important;
+}
+
+.workflow-card {
+  border-left: 4px solid #10b981 !important;
+}
+
+.syntax-card {
+  border-left: 4px solid #eab308 !important;
+}
+
+.migration-card {
+  border-left: 4px solid #8b5cf6 !important;
+}
+
+.sdwan-card {
+  border-left: 4px solid #06b6d4 !important;
+}
+
+.pbr-card {
+  border-left: 4px solid #f97316 !important;
+}
+
+.interfaces-card {
+  border-left: 4px solid #3b82f6 !important;
+}
+
+.log-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.raw-log-block {
+  background-color: #06090e;
+  border: 1px solid #1a2233;
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: all;
+  border-left: 3px solid #f59e0b;
+}
+
+.critical-find-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(17, 24, 39, 0.6) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.15);
+}
+
+.critical-find-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 800;
+  color: #ff6b6b;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+}
+
+.critical-needle {
+  background-color: rgba(239, 68, 68, 0.25);
+  color: #fee2e2;
+  border: 1px dashed var(--forti-red);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  display: inline-block;
+}
+
+.fix-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+}
+
+.fix-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--green-online);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.template-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+

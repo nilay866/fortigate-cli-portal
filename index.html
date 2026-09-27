@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fortinet FortiGate® - CLI Diagnostics & Troubleshooting Portal</title>
+  <meta name="description" content="Fortinet FortiGate Web CLI & Troubleshooting Operations Portal. 100% database-free, live parameter injection, 1-click copy, and authentic FortiOS interface.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <svg class="toast-icon" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+    </svg>
+    <span id="toast-message">Command copied to clipboard!</span>
+  </div>
+
+  <div class="app-layout">
+    <!-- AUTHENTIC FORTIOS RED & SLATE TOP NAVBAR -->
+    <header class="forti-header">
+      <div class="header-left">
+        <!-- Iconic Fortinet segmented red logo -->
+        <div class="forti-logo-wrap">
+          <svg class="fortinet-brand-svg" viewBox="0 0 140 28" fill="none">
+            <!-- 8-segment red mosaic grid -->
+            <rect x="0" y="2" width="7" height="11" fill="#EE3124"/>
+            <rect x="9" y="2" width="7" height="11" fill="#EE3124"/>
+            <rect x="0" y="15" width="7" height="11" fill="#EE3124"/>
+            <rect x="9" y="15" width="7" height="11" fill="#EE3124"/>
+            <rect x="18" y="2" width="7" height="11" fill="#EE3124"/>
+            <rect x="27" y="2" width="7" height="11" fill="#EE3124"/>
+            <rect x="18" y="15" width="7" height="11" fill="#EE3124"/>
+            <rect x="27" y="15" width="7" height="11" fill="#EE3124"/>
+            <!-- Text logo -->
+            <text x="40" y="21" fill="#FFFFFF" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="19" letter-spacing="1">FORTINET</text>
+          </svg>
+        </div>
+
+        <div class="vdom-pill-wrap">
+          <span class="device-name-badge" id="display-hostname">FGT-OFFICE-FW01</span>
+          <span class="vdom-badge">VDOM: root</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="forti-search">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+          </svg>
+          <input type="text" id="global-search" placeholder="Search FortiOS commands, diagnose, get, execute, drops... [/]" aria-label="Search FortiOS CLI">
+          <button id="clear-search" class="clear-btn hidden" title="Clear search">&times;</button>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Interactive FortiOS CLI Drawer Toggle -->
+        <button id="toggle-cli-console" class="forti-cli-btn" title="Open FortiOS CLI Terminal Console">
+          <span class="cli-prompt-icon">&gt;_</span>
+          <span>Web CLI</span>
+        </button>
+
+        <!-- FortiOS Status indicators -->
+        <div class="sys-badge-group">
+          <span class="status-indicator-dot" title="FortiOS System Online"></span>
+          <span class="firmware-tag">FortiOS v7.4.4</span>
+        </div>
+
+        <button id="theme-toggle" class="forti-icon-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+          <svg class="sun-icon hidden" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd" />
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+        </button>
+
+        <div class="user-profile-badge">
+          <span class="user-avatar">admin</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- LIVE VARIABLE INJECTOR (OFFICE PARAMETERS) -->
+    <section class="forti-param-injector" aria-label="Live parameter customizer">
+      <div class="injector-header">
+        <div class="injector-title">
+          <span class="live-pulse"></span>
+          <strong>Office Network Variables</strong>
+          <span class="injector-subtitle">Changes below inject into all FortiGate CLI commands instantly</span>
+        </div>
+        <div class="injector-actions">
+          <button id="reset-variables-btn" class="btn-subtle" title="Reset all variables to defaults">Reset Defaults</button>
+          <span class="zero-db-tag">Zero Database &bull; Local Only</span>
+        </div>
+      </div>
+
+      <div class="injector-grid">
+        <div class="injector-field">
+          <label for="var-hostname">Firewall Hostname</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">FGT</span>
+            <input type="text" id="var-hostname" value="FGT-OFFICE-FW01" placeholder="FGT-OFFICE-FW01">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-client-ip">Client / Source IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">src</span>
+            <input type="text" id="var-client-ip" value="192.168.1.100" placeholder="192.168.1.100">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-server-ip">Server / Dest IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">dst</span>
+            <input type="text" id="var-server-ip" value="10.20.30.50" placeholder="10.20.30.50">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-port">Service Port</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">port</span>
+            <input type="text" id="var-port" value="443" placeholder="443">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-interface">Interface</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">nic</span>
+            <input type="text" id="var-interface" value="any" placeholder="any, port1, wan1">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-fortigate-ip">FortiGate LAN IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">lan</span>
+            <input type="text" id="var-fortigate-ip" value="192.168.1.1" placeholder="192.168.1.1">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-peer-ip">Remote Peer Public IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">vpn</span>
+            <input type="text" id="var-peer-ip" value="203.0.113.50" placeholder="203.0.113.50">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-tunnel-name">IPsec Tunnel Name</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">vpn</span>
+            <input type="text" id="var-tunnel-name" value="VPN_Branch_Site" placeholder="VPN_Branch_Site">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-bgp-ip">BGP Peer IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">bgp</span>
+            <input type="text" id="var-bgp-ip" value="198.51.100.1" placeholder="198.51.100.1">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-username">SSL VPN User</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">user</span>
+            <input type="text" id="var-username" value="john.smith" placeholder="john.smith">
+          </div>
+        </div>
+
+        <div class="injector-field">
+          <label for="var-tftp-ip">TFTP Server IP</label>
+          <div class="injector-input-wrap">
+            <span class="field-prefix">tftp</span>
+            <input type="text" id="var-tftp-ip" value="192.168.1.200" placeholder="192.168.1.200">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORTIOS INCIDENT DIAGNOSTIC PRESETS (WIZARD) -->
+    <section class="forti-wizard-bar">
+      <div class="wizard-label">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+        </svg>
+        Diagnostic Scenarios & Templates:
+      </div>
+      <div class="wizard-pills" id="wizard-pills">
+        <button class="pill-btn active" data-filter="all">All Operations</button>
+        <button class="pill-btn" data-filter="preset-workflow">📋 Step-by-Step Prereq Builder</button>
+        <button class="pill-btn" data-filter="preset-sdwan">🌐 SD-WAN & Performance SLA</button>
+        <button class="pill-btn" data-filter="preset-migration">🔄 Reference Migration (Zero Loss)</button>
+        <button class="pill-btn" data-filter="preset-interfaces">🔌 Interface & LACP Trunk</button>
+        <button class="pill-btn" data-filter="preset-pbr">🧭 Policy Routes (PBR)</button>
+        <button class="pill-btn" data-filter="preset-syntax">🛡️ Parse Errors & Syntax Shield</button>
+        <button class="pill-btn" data-filter="preset-cli-ops">⌨️ Pure CLI Operations</button>
+        <button class="pill-btn" data-filter="preset-error-logs">🚨 Error Logs & Fixes</button>
+        <button class="pill-btn" data-filter="preset-policy-templates">📜 Policy Templates</button>
+        <button class="pill-btn" data-filter="preset-object-templates">📦 Objects & Groups</button>
+        <button class="pill-btn" data-filter="preset-vip-templates">🔀 VIP / Port Forward</button>
+        <button class="pill-btn" data-filter="preset-packet-drop">🚫 Traffic Dropped / Blocked</button>
+        <button class="pill-btn" data-filter="preset-vpn-down">🔒 IPsec VPN Down</button>
+        <button class="pill-btn" data-filter="preset-ssl-vpn">👤 SSL VPN Issues</button>
+        <button class="pill-btn" data-filter="preset-asymmetric">🔄 Asymmetric / RPF Drop</button>
+        <button class="pill-btn" data-filter="preset-stuck-session">⚡ Clear Stuck Sessions</button>
+        <button class="pill-btn" data-filter="preset-high-cpu">🔥 High CPU / Crash</button>
+      </div>
+    </section>
+
+    <!-- MAIN BODY: FORTIOS NAVIGATION SIDEBAR + WORKBENCH -->
+    <div class="forti-workspace">
+      <!-- FORTIOS STYLE SIDEBAR MENU -->
+      <aside class="forti-sidebar">
+        <div class="sidebar-header-label">FORTIOS NAVIGATION</div>
+        <nav class="forti-nav-tree" id="category-nav">
+          <button class="nav-item active" data-category="all">
+            <span class="nav-icon">📁</span>
+            <span class="nav-text">All Commands</span>
+            <span class="nav-count" id="count-all">0</span>
+          </button>
+
+          <div class="nav-group-title">STEP-BY-STEP WORKFLOWS</div>
+          <button class="nav-item" data-category="workflow">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">Prereq & Policy Builder</span>
+            <span class="nav-count" id="count-workflow">0</span>
+          </button>
+          <button class="nav-item" data-category="migration">
+            <span class="nav-icon">🔄</span>
+            <span class="nav-text">Reference Migration (Zero Loss)</span>
+            <span class="nav-count" id="count-migration">0</span>
+          </button>
+          <button class="nav-item" data-category="syntax-shield">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-text">Parse Error & Syntax Shield</span>
+            <span class="nav-count" id="count-syntax-shield">0</span>
+          </button>
+
+          <div class="nav-group-title">SD-WAN & ROUTING</div>
+          <button class="nav-item" data-category="sdwan">
+            <span class="nav-icon">🌐</span>
+            <span class="nav-text">SD-WAN & SLA Steering</span>
+            <span class="nav-count" id="count-sdwan">0</span>
+          </button>
+          <button class="nav-item" data-category="pbr">
+            <span class="nav-icon">🧭</span>
+            <span class="nav-text">Policy Routes (PBR)</span>
+            <span class="nav-count" id="count-pbr">0</span>
+          </button>
+          <button class="nav-item" data-category="route-templates">
+            <span class="nav-icon">🛣️</span>
+            <span class="nav-text">Routes & Gateways</span>
+            <span class="nav-count" id="count-route-templates">0</span>
+          </button>
+
+          <div class="nav-group-title">INTERFACES & TRUNKING</div>
+          <button class="nav-item" data-category="interfaces">
+            <span class="nav-icon">🔌</span>
+            <span class="nav-text">Interfaces & LACP Aggregate</span>
+            <span class="nav-count" id="count-interfaces">0</span>
+          </button>
+
+          <div class="nav-group-title">CLI-ONLY ADMINISTRATION</div>
+          <button class="nav-item" data-category="cli-ops">
+            <span class="nav-icon">⌨️</span>
+            <span class="nav-text">CLI Ops & Rule Ordering</span>
+            <span class="nav-count" id="count-cli-ops">0</span>
+          </button>
+          
+          <div class="nav-group-title">ERROR & LOG RESOLVER</div>
+          <button class="nav-item" data-category="error-logs">
+            <span class="nav-icon">🚨</span>
+            <span class="nav-text">Error Logs: Find & Fix</span>
+            <span class="nav-count" id="count-error-logs">0</span>
+          </button>
+
+          <div class="nav-group-title">CONFIG & OBJECT TEMPLATES</div>
+          <button class="nav-item" data-category="policy-templates">
+            <span class="nav-icon">📜</span>
+            <span class="nav-text">Firewall Policies</span>
+            <span class="nav-count" id="count-policy-templates">0</span>
+          </button>
+          <button class="nav-item" data-category="object-templates">
+            <span class="nav-icon">📦</span>
+            <span class="nav-text">Addresses & Groups</span>
+            <span class="nav-count" id="count-object-templates">0</span>
+          </button>
+          <button class="nav-item" data-category="vip-templates">
+            <span class="nav-icon">🔀</span>
+            <span class="nav-text">VIP & Port Forward</span>
+            <span class="nav-count" id="count-vip-templates">0</span>
+          </button>
+
+          <div class="nav-group-title">DIAGNOSTICS & PACKETS</div>
+          <button class="nav-item" data-category="flow">
+            <span class="nav-icon">🔬</span>
+            <span class="nav-text">Debug Flow (Policy/NAT)</span>
+            <span class="nav-count" id="count-flow">0</span>
+          </button>
+          <button class="nav-item" data-category="sniffer">
+            <span class="nav-icon">📡</span>
+            <span class="nav-text">Packet Sniffer</span>
+            <span class="nav-count" id="count-sniffer">0</span>
+          </button>
+          <button class="nav-item" data-category="session">
+            <span class="nav-icon">📑</span>
+            <span class="nav-text">Active Session Table</span>
+            <span class="nav-count" id="count-session">0</span>
+          </button>
+          <button class="nav-item" data-category="ping">
+            <span class="nav-icon">📍</span>
+            <span class="nav-text">Ping & Traceroute</span>
+            <span class="nav-count" id="count-ping">0</span>
+          </button>
+
+          <div class="nav-group-title">NETWORK & SECURITY</div>
+          <button class="nav-item" data-category="routing">
+            <span class="nav-icon">🧭</span>
+            <span class="nav-text">Routing & BGP Table</span>
+            <span class="nav-count" id="count-routing">0</span>
+          </button>
+          <button class="nav-item" data-category="network">
+            <span class="nav-icon">🔌</span>
+            <span class="nav-text">Interface & ARP</span>
+            <span class="nav-count" id="count-network">0</span>
+          </button>
+          <button class="nav-item" data-category="ipsec">
+            <span class="nav-icon">🔐</span>
+            <span class="nav-text">IPsec Tunnels & IKE</span>
+            <span class="nav-count" id="count-ipsec">0</span>
+          </button>
+          <button class="nav-item" data-category="sslvpn">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">SSL VPN Users & Auth</span>
+            <span class="nav-count" id="count-sslvpn">0</span>
+          </button>
+
+          <div class="nav-group-title">SYSTEM OPERATIONS</div>
+          <button class="nav-item" data-category="system">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-text">CPU, Top & Crashlogs</span>
+            <span class="nav-count" id="count-system">0</span>
+          </button>
+          <button class="nav-item" data-category="ha">
+            <span class="nav-icon">👥</span>
+            <span class="nav-text">HA Cluster & Sync</span>
+            <span class="nav-count" id="count-ha">0</span>
+          </button>
+          <button class="nav-item" data-category="backup">
+            <span class="nav-icon">💾</span>
+            <span class="nav-text">Backup & Revisions</span>
+            <span class="nav-count" id="count-backup">0</span>
+          </button>
+        </nav>
+
+        <!-- FortiGate System Summary Card -->
+        <div class="forti-system-widget">
+          <div class="widget-title">
+            <span class="forti-bullet"></span>
+            FortiGate Status
+          </div>
+          <div class="widget-row">
+            <span class="w-label">Model:</span>
+            <span class="w-val">FortiGate-100F</span>
+          </div>
+          <div class="widget-row">
+            <span class="w-label">Firmware:</span>
+            <span class="w-val">v7.4.4 build2573</span>
+          </div>
+          <div class="widget-row">
+            <span class="w-label">ASIC Acceleration:</span>
+            <span class="w-val asic-badge">CP9 / NP6x</span>
+          </div>
+          <div class="widget-row">
+            <span class="w-label">HA Status:</span>
+            <span class="w-val ha-ok">a-p In-Sync</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN WORKBENCH CONTENT -->
+      <main class="forti-content">
+        <!-- Results Bar -->
+        <div class="content-toolbar">
+          <div class="results-stats" id="results-count-text">Showing all FortiOS CLI commands</div>
+          <div class="toolbar-actions">
+            <button id="copy-all-visible" class="forti-btn-primary" title="Copy all visible commands as ready-to-run script">
+              <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+              </svg>
+              Copy Script Block
+            </button>
+          </div>
+        </div>
+
+        <!-- Command Cards Grid -->
+        <div class="cards-grid" id="cards-container">
+          <!-- Dynamically populated by app.js -->
+        </div>
+
+        <!-- FORTIOS LOG DECODER -->
+        <section class="forti-decoder-box" id="log-decoder">
+          <div class="decoder-header">
+            <span class="forti-badge-alert">TROUBLESHOOTING REFERENCE</span>
+            <h2>FortiOS CLI Log Decoder: What the Messages Mean</h2>
+            <p>Diagnose drops, VPN renegotiation failures, and policy rejections with this Fortinet root cause matrix.</p>
+          </div>
+
+          <div class="decoder-table-scroll">
+            <table class="forti-table">
+              <thead>
+                <tr>
+                  <th>FortiOS CLI Log Message</th>
+                  <th>Root Cause</th>
+                  <th>Actionable Solution</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Denied by policy 0</code></td>
+                  <td><strong>Implicit Deny Drop.</strong> No firewall rule allowed this source IP, destination IP, or service port.</td>
+                  <td>Add an explicit firewall policy under <code>Policy & Objects</code> allowing source <code>{{client_ip}}</code> to <code>{{server_ip}}</code> on port <code>{{port}}</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>Reverse path check failed, drop</code></td>
+                  <td><strong>Asymmetric Routing / RPF Drop.</strong> Return packet route points to a different interface than the incoming packet arrived on.</td>
+                  <td>Inspect <code>get router info routing-table details {{client_ip}}</code> to fix the route, or disable RPF check with <code>set src-check disable</code> on that interface.</td>
+                </tr>
+                <tr>
+                  <td><code>no proposal chosen</code></td>
+                  <td><strong>IPsec Phase 1/2 Mismatch.</strong> Encryption, hash, or Diffie-Hellman group differs from remote peer.</td>
+                  <td>Compare IKE/Phase 2 proposals on FortiGate vs remote peer <code>{{peer_ip}}</code> and ensure AES/SHA and DH groups match identically.</td>
+                </tr>
+                <tr>
+                  <td><code>pre-shared key mismatch</code></td>
+                  <td><strong>IPsec Authentication Failed.</strong> The Pre-Shared Key (PSK password) does not match the peer.</td>
+                  <td>Re-type the Pre-Shared Key on both firewalls under the Phase 1 interface settings.</td>
+                </tr>
+                <tr>
+                  <td><code>received notify: INVALID_ID_INFORMATION</code></td>
+                  <td><strong>Phase 2 Selector Mismatch.</strong> Local & remote subnet definitions do not match the remote peer's inverted definitions.</td>
+                  <td>Verify Phase 2 selectors: FortiGate Local Address must match the remote peer's Remote Address.</td>
+                </tr>
+                <tr>
+                  <td><code>Find a route: gw-X.X.X.X via portY</code></td>
+                  <td><strong>Routing Success.</strong> The FortiGate successfully found a valid route in the active FIB table.</td>
+                  <td>Normal forwarding behavior. Verify the gateway IP and egress interface match your intended network path.</td>
+                </tr>
+                <tr>
+                  <td><code>SNAT 192.168.1.X->1.2.3.4</code></td>
+                  <td><strong>Source NAT Applied.</strong> Private IP translated to interface or IP pool address.</td>
+                  <td>If traffic is crossing an internal site-to-site VPN, disable NAT on that firewall policy!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="decoder-header" style="margin-top: 2rem; border-top: 1px solid var(--forti-border); padding-top: 1.5rem;">
+            <span class="forti-badge-alert" style="background-color: rgba(234, 179, 8, 0.15); color: #facc15; border-color: rgba(234, 179, 8, 0.4);">SYNTAX & PARSER SHIELD</span>
+            <h2>FortiOS CLI Parse & Execution Errors: Exact Causes & Solutions</h2>
+            <p>Every common CLI parsing rejection across FortiOS 6.4, 7.0, 7.2, 7.4, and 7.6 explained.</p>
+          </div>
+
+          <div class="decoder-table-scroll">
+            <table class="forti-table">
+              <thead>
+                <tr>
+                  <th>FortiOS CLI Parser Error</th>
+                  <th>Exact Root Cause</th>
+                  <th>How to Prevent / Fix in CLI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>node_check_object fail! for &lt;field&gt; &lt;name&gt;</code></td>
+                  <td><strong>Missing Object Dependency or Case Mismatch.</strong> The address, service, or interface does NOT exist in FortiOS memory yet, or letter casing differs (FortiOS names are strictly CASE-SENSITIVE).</td>
+                  <td>Create the address/service object FIRST before referencing it in a policy. Check exact name with <code>get firewall address | grep -i &lt;name&gt;</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>command parse error before '...'</code></td>
+                  <td><strong>Unquoted String or Space/Comma Delimiter Error.</strong> The name contains spaces or hyphens without quotes, or you used commas to separate multiple ports/services instead of spaces.</td>
+                  <td>Enclose names in <code>"double quotes"</code>. Separate multiple items with spaces (e.g. <code>set service "HTTP" "HTTPS"</code>, NEVER with commas).</td>
+                </tr>
+                <tr>
+                  <td><code>attribute set fail for nat</code></td>
+                  <td><strong>Central SNAT Global Conflict.</strong> Central SNAT is enabled globally (<code>central-nat: enable</code>). In this mode, configuring NAT inside individual policies is strictly disallowed.</td>
+                  <td>Check with <code>get system settings | grep central-nat</code>. If enabled, omit <code>set nat</code> from policy and configure NAT in <code>config firewall central-snat-map</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>value parse error before '192.168.1.0/24'</code></td>
+                  <td><strong>Unsupported CIDR Notation.</strong> Older FortiOS versions and specific subtrees (like <code>config firewall address</code>) require dotted decimal subnet masks.</td>
+                  <td>Always use space-separated dotted decimal: <code>set subnet 192.168.1.0 255.255.255.0</code>. For single host: <code>set subnet &lt;ip&gt; 255.255.255.255</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>entry is used by another entry</code></td>
+                  <td><strong>Active Reference Lock.</strong> You tried to delete an address or service object that is currently bound to an active firewall policy, VIP, or group.</td>
+                  <td>Find the referencing policy with <code>diagnose sys checkused firewall.address.name "&lt;name&gt;"</code>, remove it from that policy, then delete.</td>
+                </tr>
+                <tr>
+                  <td><code>unknown command before 'utm-status'</code></td>
+                  <td><strong>FortiOS 7.2+ Deprecation.</strong> In FortiOS 7.2 and 7.4+, <code>utm-status</code> is deprecated because attaching a security profile automatically activates UTM.</td>
+                  <td>Omit <code>set utm-status enable</code> and directly assign your profile: <code>set av-profile "default"</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>command parse error before 'policy'</code></td>
+                  <td><strong>NGFW Policy-Based Mode.</strong> The VDOM is set to Policy-Based NGFW mode instead of Profile-Based mode.</td>
+                  <td>In Policy-Based mode, the table name is <code>config firewall security-policy</code>. Verify mode with <code>get system settings | grep policy-mode</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- DYNAMIC FORTIOS WEB CLI CONSOLE DRAWER (JUST LIKE FORTIOS WEBUI) -->
+    <div id="cli-console-drawer" class="cli-drawer hidden">
+      <div class="cli-drawer-header">
+        <div class="cli-drawer-title">
+          <span class="cli-dot-green"></span>
+          <span class="cli-header-text" id="cli-console-title">FortiGate CLI Console - FGT-OFFICE-FW01 (root)</span>
+        </div>
+        <div class="cli-drawer-controls">
+          <button id="cli-clear-btn" class="cli-ctrl-btn" title="Clear Console">Clear</button>
+          <button id="cli-copy-all-btn" class="cli-ctrl-btn" title="Copy CLI Contents">Copy All</button>
+          <button id="cli-close-btn" class="cli-ctrl-btn close-x" title="Close CLI Console">&times;</button>
+        </div>
+      </div>
+      <div class="cli-drawer-body" id="cli-terminal-body">
+        <div class="cli-welcome">
+          FortiGate-100F v7.4.4,build2573,240417 (GA.M)<br>
+          Type commands or click "Run in CLI" on any command card above.<br>
+          ------------------------------------------------------------------------
+        </div>
+        <div id="cli-output-history"></div>
+        <div class="cli-input-line">
+          <span class="cli-prompt" id="cli-active-prompt">FGT-OFFICE-FW01 # </span>
+          <input type="text" id="cli-stdin" placeholder="Type a FortiOS command (e.g. get system status, diagnose...)" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
